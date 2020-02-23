@@ -1,14 +1,8 @@
-/* This is a really minimal testing framework for C.
+/* SDSLib 2.0 -- A C dynamic strings library
  *
- * Example:
- *
- * test_cond("Check if 1 == 1", 1==1)
- * test_cond("Check if 5 > 10", 5 > 10)
- * test_report()
- *
- * ----------------------------------------------------------------------------
- *
- * Copyright (c) 2010-2012, Salvatore Sanfilippo <antirez at gmail dot com>
+ * Copyright (c) 2006-2015, Salvatore Sanfilippo <antirez at gmail dot com>
+ * Copyright (c) 2015, Oran Agra
+ * Copyright (c) 2015, Redis Labs, Inc
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,22 +30,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __TESTHELP_H
-#define __TESTHELP_H
+/* SDS allocator selection.
+ *
+ * This file is used in order to change the SDS allocator at compile time.
+ * Just define the following defines to what you want to use. Also add
+ * the include of your alternate allocator if needed (not needed in order
+ * to use the default libc allocator). */
 
-int __failed_tests = 0;
-int __test_num = 0;
-#define test_cond(descr,_c) do { \
-    __test_num++; printf("%d - %s: ", __test_num, descr); \
-    if(_c) printf("PASSED\n"); else {printf("FAILED\n"); __failed_tests++;} \
-} while(0);
-#define test_report() do { \
-    printf("%d tests, %d passed, %d failed\n", __test_num, \
-                    __test_num-__failed_tests, __failed_tests); \
-    if (__failed_tests) { \
-        printf("=== WARNING === We have failed tests here...\n"); \
-        exit(1); \
-    } \
-} while(0);
-
-#endif
+#define s_malloc malloc
+#define s_realloc realloc
+#define s_free free
